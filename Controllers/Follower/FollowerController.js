@@ -7,7 +7,7 @@
 // - In production, always hash passwords (e.g., using bcrypt) and add input validation (e.g., using Joi or express-validator).
 // - These controllers handle basic operations: GET all Followers, GET by ID, POST create, PUT update, DELETE by ID.
 
-const con = require('../dbconnect');
+const con = require('../../dbconnect');
 const crypto = require('crypto');
 
 

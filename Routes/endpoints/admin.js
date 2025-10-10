@@ -8,38 +8,6 @@ const {
   updateUser ,
   deleteUser ,
 } = require('../../Controllers/UserController');
-const {
-  getUsers,
-  getUserById,
-  createUser ,
-  updateUser ,
-  deleteUser ,
-} = require('../../Controllers/UserController');
-
-const {
-  getUsers,
-  getUserById,
-  createUser ,
-  updateUser ,
-  deleteUser ,
-} = require('../../Controllers/UserController');
-
-const {
-  getUsers,
-  getUserById,
-  createUser ,
-  updateUser ,
-  deleteUser ,
-} = require('../../Controllers/UserController');
-
-const {
-  getUsers,
-  getUserById,
-  createUser ,
-  updateUser ,
-  deleteUser ,
-} = require('../../Controllers/UserController');
-
 
 
 router.use(express.urlencoded({ extended: true }));
