@@ -1,76 +1,76 @@
-// userController.js
-// This file contains all the basic CRUD controllers for user management in a Node.js application using Express.js and MySQL (via mysql2 package).
+// InfluencerController.js
+// This file contains all the basic CRUD controllers for Influencer management in a Node.js application using Express.js and MySQL (via mysql2 package).
 // Assumptions:
-// - You have a MySQL database with a 'users' table: id (INT, AUTO_INCREMENT, PRIMARY KEY), name (VARCHAR), email (VARCHAR, UNIQUE), password (VARCHAR).
+// - You have a MySQL database with a 'Influencers' table: id (INT, AUTO_INCREMENT, PRIMARY KEY), name (VARCHAR), email (VARCHAR, UNIQUE), password (VARCHAR).
 // - Database connection is handled in '../config/database.js' exporting a mysql2 pool (e.g., const pool = mysql.createPool({...}); module.exports = pool;).
 // - Install dependencies: npm install express mysql2 (and bcrypt for production password hashing).
 // - In production, always hash passwords (e.g., using bcrypt) and add input validation (e.g., using Joi or express-validator).
-// - These controllers handle basic operations: GET all users, GET by ID, POST create, PUT update, DELETE by ID.
+// - These controllers handle basic operations: GET all Influencers, GET by ID, POST create, PUT update, DELETE by ID.
 
 const con = require('../dbconnect');
 const crypto = require('crypto');
 
 
 
-// Get all users
-const getUsers = async (req, res) => {
+// Get all Influencers
+const getInfluencers = async (req, res) => {
   try {
           console.log("TEST DATA :");
-          con.query("SELECT * FROM users", function (err, result, fields) {
+          con.query("SELECT * FROM Influencers", function (err, result, fields) {
                 if (err) throw err;
                 console.log(result); // result will contain the fetched data
                 res.send(result);
               }); 
              // res.status(200).json(result);
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error('Error fetching Influencers:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Get user by ID
-const getUserById = async (req, res) => {
+// Get Influencer by ID
+const getInfluencerById = async (req, res) => {
   const { id } = req.params;
   try {
-    con.query("SELECT * FROM users where id = ? ",[id], function (err, result, fields) {
+    con.query("SELECT * FROM Influencers where id = ? ",[id], function (err, result, fields) {
                 if (err) throw err;
                 console.log(result); // result will contain the fetched data
                 res.send(result);
               }); 
     
   } catch (error) {
-    console.error('Error fetching user:', error);
+    console.error('Error fetching Influencer:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Create a new user
-const createUser  = async (req, res) => {
-  const { name, email, username,password,phone } = req.body;
-  const userId = crypto.randomUUID();
+// Create a new Influencer
+const createInfluencer  = async (req, res) => {
+  const { name, email, Influencername,password,phone } = req.body;
+  const InfluencerId = crypto.randomUUID();
   const currentDate = new Date();
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Name, email, and password are required' });
   }
   try {
     // In production: const hashedPassword = await bcrypt.hash(password, 10);
-      const sql = 'INSERT INTO `users`( `full_name`, `username`, `email`,`phone`, `password_hash`) VALUES (?,?,?,?,?)'
-    con.query(sql,[name,username,email,phone,password], function (err, result, fields) {
+      const sql = 'INSERT INTO `Influencers`( `full_name`, `Influencername`, `email`,`phone`, `password_hash`) VALUES (?,?,?,?,?)'
+    con.query(sql,[name,Influencername,email,phone,password], function (err, result, fields) {
       if (err) throw err;
       console.log(result); // result will contain the fetched data
-      res.send('User registered successfully!');
+      res.send('Influencer registered successfully!');
     });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ error: 'Email already exists' });
     }
-    console.error('Error creating user:', error);
+    console.error('Error creating Influencer:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Update user by ID
-const updateUser  = async (req, res) => {
+// Update Influencer by ID
+const updateInfluencer  = async (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
   if (!name && !email && !password) {
@@ -95,42 +95,42 @@ const updateUser  = async (req, res) => {
     values.push(id);
 
     const [result] = await db.execute(
-      `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`,
+      `UPDATE Influencers SET ${updateFields.join(', ')} WHERE id = ?`,
       values
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'User  not found' });
+      return res.status(404).json({ error: 'Influencer  not found' });
     }
-    res.status(200).json({ message: 'User  updated successfully' });
+    res.status(200).json({ message: 'Influencer  updated successfully' });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ error: 'Email already exists' });
     }
-    console.error('Error updating user:', error);
+    console.error('Error updating Influencer:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Delete user by ID
-const deleteUser  = async (req, res) => {
+// Delete Influencer by ID
+const deleteInfluencer  = async (req, res) => {
   const { id } = req.params;
   try {
-    const [result] = await db.execute('DELETE FROM users WHERE id = ?', [id]);
+    const [result] = await db.execute('DELETE FROM Influencers WHERE id = ?', [id]);
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'User  not found' });
+      return res.status(404).json({ error: 'Influencer  not found' });
     }
-    res.status(200).json({ message: 'User  deleted successfully' });
+    res.status(200).json({ message: 'Influencer  deleted successfully' });
   } catch (error) {
-    console.error('Error deleting user:', error);
+    console.error('Error deleting Influencer:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
 module.exports = {
-  getUsers,
-  getUserById,
-  createUser ,
-  updateUser ,
-  deleteUser ,
+  getInfluencers,
+  getInfluencerById,
+  createInfluencer ,
+  updateInfluencer ,
+  deleteInfluencer ,
 };

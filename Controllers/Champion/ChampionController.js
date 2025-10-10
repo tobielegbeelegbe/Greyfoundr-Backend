@@ -1,76 +1,76 @@
-// userController.js
-// This file contains all the basic CRUD controllers for user management in a Node.js application using Express.js and MySQL (via mysql2 package).
+// ChampionController.js
+// This file contains all the basic CRUD controllers for Champion management in a Node.js application using Express.js and MySQL (via mysql2 package).
 // Assumptions:
-// - You have a MySQL database with a 'users' table: id (INT, AUTO_INCREMENT, PRIMARY KEY), name (VARCHAR), email (VARCHAR, UNIQUE), password (VARCHAR).
+// - You have a MySQL database with a 'Champions' table: id (INT, AUTO_INCREMENT, PRIMARY KEY), name (VARCHAR), email (VARCHAR, UNIQUE), password (VARCHAR).
 // - Database connection is handled in '../config/database.js' exporting a mysql2 pool (e.g., const pool = mysql.createPool({...}); module.exports = pool;).
 // - Install dependencies: npm install express mysql2 (and bcrypt for production password hashing).
 // - In production, always hash passwords (e.g., using bcrypt) and add input validation (e.g., using Joi or express-validator).
-// - These controllers handle basic operations: GET all users, GET by ID, POST create, PUT update, DELETE by ID.
+// - These controllers handle basic operations: GET all Champions, GET by ID, POST create, PUT update, DELETE by ID.
 
 const con = require('../dbconnect');
 const crypto = require('crypto');
 
 
 
-// Get all users
-const getUsers = async (req, res) => {
+// Get all Champions
+const getChampions = async (req, res) => {
   try {
           console.log("TEST DATA :");
-          con.query("SELECT * FROM users", function (err, result, fields) {
+          con.query("SELECT * FROM Champions", function (err, result, fields) {
                 if (err) throw err;
                 console.log(result); // result will contain the fetched data
                 res.send(result);
               }); 
              // res.status(200).json(result);
   } catch (error) {
-    console.error('Error fetching users:', error);
+    console.error('Error fetching Champions:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Get user by ID
-const getUserById = async (req, res) => {
+// Get Champion by ID
+const getChampionById = async (req, res) => {
   const { id } = req.params;
   try {
-    con.query("SELECT * FROM users where id = ? ",[id], function (err, result, fields) {
+    con.query("SELECT * FROM Champions where id = ? ",[id], function (err, result, fields) {
                 if (err) throw err;
                 console.log(result); // result will contain the fetched data
                 res.send(result);
               }); 
     
   } catch (error) {
-    console.error('Error fetching user:', error);
+    console.error('Error fetching Champion:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Create a new user
-const createUser  = async (req, res) => {
-  const { name, email, username,password,phone } = req.body;
-  const userId = crypto.randomUUID();
+// Create a new Champion
+const createChampion  = async (req, res) => {
+  const { name, email, Championname,password,phone } = req.body;
+  const ChampionId = crypto.randomUUID();
   const currentDate = new Date();
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Name, email, and password are required' });
   }
   try {
     // In production: const hashedPassword = await bcrypt.hash(password, 10);
-      const sql = 'INSERT INTO `users`( `full_name`, `username`, `email`,`phone`, `password_hash`) VALUES (?,?,?,?,?)'
-    con.query(sql,[name,username,email,phone,password], function (err, result, fields) {
+      const sql = 'INSERT INTO `Champions`( `full_name`, `Championname`, `email`,`phone`, `password_hash`) VALUES (?,?,?,?,?)'
+    con.query(sql,[name,Championname,email,phone,password], function (err, result, fields) {
       if (err) throw err;
       console.log(result); // result will contain the fetched data
-      res.send('User registered successfully!');
+      res.send('Champion registered successfully!');
     });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ error: 'Email already exists' });
     }
-    console.error('Error creating user:', error);
+    console.error('Error creating Champion:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Update user by ID
-const updateUser  = async (req, res) => {
+// Update Champion by ID
+const updateChampion  = async (req, res) => {
   const { id } = req.params;
   const { name, email, password } = req.body;
   if (!name && !email && !password) {
@@ -95,42 +95,42 @@ const updateUser  = async (req, res) => {
     values.push(id);
 
     const [result] = await db.execute(
-      `UPDATE users SET ${updateFields.join(', ')} WHERE id = ?`,
+      `UPDATE Champions SET ${updateFields.join(', ')} WHERE id = ?`,
       values
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'User  not found' });
+      return res.status(404).json({ error: 'Champion  not found' });
     }
-    res.status(200).json({ message: 'User  updated successfully' });
+    res.status(200).json({ message: 'Champion  updated successfully' });
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ error: 'Email already exists' });
     }
-    console.error('Error updating user:', error);
+    console.error('Error updating Champion:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
-// Delete user by ID
-const deleteUser  = async (req, res) => {
+// Delete Champion by ID
+const deleteChampion  = async (req, res) => {
   const { id } = req.params;
   try {
-    const [result] = await db.execute('DELETE FROM users WHERE id = ?', [id]);
+    const [result] = await db.execute('DELETE FROM Champions WHERE id = ?', [id]);
     if (result.affectedRows === 0) {
-      return res.status(404).json({ error: 'User  not found' });
+      return res.status(404).json({ error: 'Champion  not found' });
     }
-    res.status(200).json({ message: 'User  deleted successfully' });
+    res.status(200).json({ message: 'Champion  deleted successfully' });
   } catch (error) {
-    console.error('Error deleting user:', error);
+    console.error('Error deleting Champion:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
 
 module.exports = {
-  getUsers,
-  getUserById,
-  createUser ,
-  updateUser ,
-  deleteUser ,
+  getChampions,
+  getChampionById,
+  createChampion ,
+  updateChampion ,
+  deleteChampion ,
 };
