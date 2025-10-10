@@ -7,7 +7,7 @@ const {
   createFollower ,
   updateFollower ,
   deleteFollower ,
-} = require('../../Controllers/FollowerController');
+} = require('../../Controllers/Follower/FollowerController');
 
 
 

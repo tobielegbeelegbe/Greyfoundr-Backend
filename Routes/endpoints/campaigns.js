@@ -7,7 +7,7 @@ const {
   createCampaign ,
   updateCampaign ,
   deleteCampaign ,
-} = require('../../Controllers/CampaignController');
+} = require('../../Controllers/Campaign/CampaignController');
 
 
 

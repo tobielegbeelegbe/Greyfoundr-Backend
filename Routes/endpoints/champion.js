@@ -7,7 +7,7 @@ const {
   createChampion ,
   updateChampion ,
   deleteChampion ,
-} = require('../../Controllers/ChampionController');
+} = require('../../Controllers/Champion/ChampionController');
 
 
 

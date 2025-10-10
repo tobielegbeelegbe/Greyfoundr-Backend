@@ -2,19 +2,19 @@ const express = require('express');
 const router = express.Router();
 const con = require('../../dbconnect');
 const {
-  getWallets,
+  getWallet,
   getWalletById,
   createWallet ,
   updateWallet ,
   deleteWallet ,
-} = require('../../Controllers/WalletController');
+} = require('../../Controllers/Wallet/WalletController');
 
 
 
 router.use(express.urlencoded({ extended: true }));
 
 // Routes
-router.get('/', getWallets);
+router.get('/', getWallet);
 router.get('/:id', getWalletById);
 router.post('/', createWallet);
 router.put('/:id', updateWallet);
