@@ -1,22 +1,38 @@
-const { DataTypes } = require('sequelize');
-const sequelize = require('../config/database');
+const pool = require('../config/database');
+const bcrypt = require('bcryptjs');
 
-const User = sequelize.define('User', {
-    firstName: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    lastName: {
-        type: DataTypes.STRING
-    },
-    email: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: true,
-        validate: {
-            isEmail: true
-        }
+class User {
+    static async create(email, password) {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const [result] = await pool.execute(
+            'INSERT INTO users (email, password) VALUES (?, ?)',
+            [email, hashedPassword]
+        );
+        return result.insertId;
     }
-});
+
+    static async findByEmail(email) {
+        const [rows] = await pool.execute(
+            'SELECT * FROM users WHERE email = ?',
+            [email]
+        );
+        return rows[0];
+    }
+
+    static async findById(id) {
+        const [rows] = await pool.execute(
+            'SELECT * FROM users WHERE id = ?',
+            [id]
+        );
+        return rows[0];
+    }
+
+    static async updateWalletBalance(id, amount) {
+        await pool.execute(
+            'UPDATE users SET wallet_balance = wallet_balance + ? WHERE id = ?',
+            [amount, id]
+        );
+    }
+}
 
 module.exports = User;
