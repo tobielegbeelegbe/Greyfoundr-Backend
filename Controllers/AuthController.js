@@ -8,17 +8,17 @@ exports.createUser  = async (req, res) => {
   const { name, email, username,password,phone } = req.body;
   const userId = crypto.randomUUID();
   const currentDate = new Date();
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Name, email, and password are required' });
+  if (!phone || !email || !password) {
+    return res.status(400).json({ error: 'Phone, email, and password are required' });
   }
   try {
     // In production: const hashedPassword = await bcrypt.hash(password, 10);
       const sql = 'INSERT INTO `users`( `full_name`, `username`, `email`,`phone`, `password_hash`) VALUES (?,?,?,?,?)'
     con.query(sql,[name,username,email,phone,password], function (err, result, fields) {
-      //if (err) throw err;
-      //console.log(err); // result will contain the fetched data
-      //res.send('User registered successfully!');
+      if (err) throw err;
+     
       res.json({ message: 'User registered successfully!' });
+      
     });
   } catch (err) {
     if (err.code === 'ER_DUP_ENTRY') {
