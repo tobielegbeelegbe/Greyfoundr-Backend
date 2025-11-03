@@ -46,8 +46,7 @@ exports.loginUser = async (req, res) => {
     }
 
     console.log(user);
-    console.log(user.password_hash);
-    console.log(password);
+
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password_hash);
@@ -56,13 +55,13 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ msg: 'Incorrect Password' });
     }
 
-    console.log(isMatch);
+   
 
     // Generate token
     const payload = { user: user };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ msg: 'Logged in successfully', token });
+    res.status(200).json({ msg: 'Logged in successfully', token });
   } catch (err) {
     //console.error(err.message);
     res.status(500).send('Server error');
