@@ -16,7 +16,7 @@ const crypto = require('crypto');
 const getCampaigns = async (req, res) => {
   try {
            const con = await pool.getConnection();
-           const sql = "SELECT * FROM Campaigns"
+           const sql = "SELECT * FROM campaigns"
            const result = await con.execute(sql);
 
            console.log(result); // result will contain the fetched data
@@ -37,7 +37,7 @@ const getCampaignById = async (req, res) => {
     const con = await pool.getConnection();
 
     const [rows] = await pool.execute(
-            "SELECT * FROM Campaigns where id = ? ",[id]
+            "SELECT * FROM campaigns where id = ? ",[id]
         );
     
     console.log(rows[0]); // result will contain the fetched data
@@ -69,7 +69,7 @@ const createCampaign  = async (req, res) => {
   try {
     // In production: const hashedPassword = await bcrypt.hash(password, 10);
     
-      const sql = "INSERT INTO `Campaigns`( `creator_id`, `title`, `description`,`start_date`, `end_date`, `goal_amount`, `current_amount`,`approved`,`created_at`) VALUES (?,?,?,?,?,?,?,?,?)";
+      const sql = "INSERT INTO `campaigns`( `creator_id`, `title`, `description`,`start_date`, `end_date`, `goal_amount`, `current_amount`,`approved`,`created_at`) VALUES (?,?,?,?,?,?,?,?,?)";
       const values = [id,title,description,new Date(startDate),convert,amount,0,false,currentDate]
       const result = await con.execute(sql,values);
       
@@ -110,7 +110,7 @@ const updateCampaign  = async (req, res) => {
     values.push(id);
 
     const [result] = await db.execute(
-      `UPDATE Campaigns SET ${updateFields.join(', ')} WHERE id = ?`,
+      `UPDATE campaigns SET ${updateFields.join(', ')} WHERE id = ?`,
       values
     );
 
