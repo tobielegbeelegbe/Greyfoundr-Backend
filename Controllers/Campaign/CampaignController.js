@@ -7,7 +7,7 @@
 // - In production, always hash passwords (e.g., using bcrypt) and add input validation (e.g., using Joi or express-validator).
 // - These controllers handle basic operations: GET all Campaigns, GET by ID, POST create, PUT update, DELETE by ID.
 
-const con = require('../../dbconnect');
+const pool = require('../../dbconnect');
 const crypto = require('crypto');
 
 
@@ -15,12 +15,13 @@ const crypto = require('crypto');
 // Get all Campaigns
 const getCampaigns = async (req, res) => {
   try {
-          console.log("TEST DATA :");
-          con.query("SELECT * FROM Campaigns", function (err, result, fields) {
-                if (err) throw err;
-                console.log(result); // result will contain the fetched data
+           const con = await pool.getConnection();
+           const sql = "SELECT * FROM Campaigns"
+           const result = await con.execute(sql);
+
+           console.log(result); // result will contain the fetched data
                 res.send(result);
-              }); 
+          
              // res.status(200).json(result);
   } catch (error) {
     console.error('Error fetching Campaigns:', error);
@@ -30,13 +31,18 @@ const getCampaigns = async (req, res) => {
 
 // Get Campaign by ID
 const getCampaignById = async (req, res) => {
+
   const { id } = req.params;
   try {
-    con.query("SELECT * FROM Campaigns where id = ? ",[id], function (err, result, fields) {
-                if (err) throw err;
-                console.log(result); // result will contain the fetched data
-                res.send(result);
-              }); 
+    const con = await pool.getConnection();
+
+    const [rows] = await pool.execute(
+            "SELECT * FROM Campaigns where id = ? ",[id]
+        );
+    
+    console.log(rows[0]); // result will contain the fetched data
+    res.send(rows[0]);
+              
     
   } catch (error) {
     console.error('Error fetching Campaign:', error);
@@ -46,20 +52,29 @@ const getCampaignById = async (req, res) => {
 
 // Create a new Campaign
 const createCampaign  = async (req, res) => {
-  const { name, email, Campaignname,password,phone } = req.body;
+  const con = await pool.getConnection();
+  const { title, description,startDate,endDate,amount,id } = req.body;
   const CampaignId = crypto.randomUUID();
   const currentDate = new Date();
-  if (!name || !email || !password) {
-    return res.status(400).json({ error: 'Name, email, and password are required' });
-  }
+  const form = endDate.split('/')
+  const day = +form[0];
+  const month = +form[1];
+  const year = +form[2];
+
+  const convert = new Date(year,month-1,day);
+
+  if (!title || !description || !id) {
+    return res.status(400).json({ error: 'Title, Description, and Amount are required' });
+  } 
   try {
     // In production: const hashedPassword = await bcrypt.hash(password, 10);
-      const sql = 'INSERT INTO `Campaigns`( `full_name`, `Campaignname`, `email`,`phone`, `password_hash`) VALUES (?,?,?,?,?)'
-    con.query(sql,[name,Campaignname,email,phone,password], function (err, result, fields) {
-      if (err) throw err;
-      console.log(result); // result will contain the fetched data
-      res.send('Campaign registered successfully!');
-    });
+    
+      const sql = "INSERT INTO `Campaigns`( `creator_id`, `title`, `description`,`start_date`, `end_date`, `goal_amount`, `current_amount`,`approved`,`created_at`) VALUES (?,?,?,?,?,?,?,?,?)";
+      const values = [id,title,description,new Date(startDate),convert,amount,0,false,currentDate]
+      const result = await con.execute(sql,values);
+      
+      res.status(200).json({ msg: 'Campaign Created successfully', id: result[0].insertId });
+    
   } catch (error) {
     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(409).json({ error: 'Email already exists' });

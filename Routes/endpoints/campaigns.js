@@ -14,11 +14,11 @@ const {
 router.use(express.urlencoded({ extended: true }));
 
 // Routes
-router.get('/', getCampaigns);
-router.get('/:id', getCampaignById);
-router.post('/', createCampaign);
+router.get('/getall', getCampaigns);
+router.get('/getcampaign/:id', getCampaignById);
+router.post('/create', createCampaign);
 router.put('/:id', updateCampaign);
-router.delete('/:id', deleteCampaign);
+router.delete('/delete:id', deleteCampaign);
 
 
 

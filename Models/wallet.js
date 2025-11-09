@@ -5,7 +5,6 @@ class User {
     static async create(email, password, phone) {
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        //const sql = 'INSERT INTO `users`(`email`,`phone`, `password_hash`) VALUES (?,?,?,?,?)'
         const [result] = await pool.execute(
             'INSERT INTO users (email, password_hash, phone) VALUES (?, ?,?)',
             [email, hashedPassword, phone]
@@ -15,23 +14,23 @@ class User {
         return result.insertId;
     }
 
-    static async updateUserProfile(email) {
+    static async getWalletBallance(id) {
         const [rows] = await pool.execute(
-            'SELECT * FROM users WHERE email = ?',
+            'SELECT balance FROM wallet WHERE id = ?',
             [email]
         );
         return rows[0];
     }
 
-    static async getUserProfile(id) {
+    static async getWallet(id) {
         const [rows] = await pool.execute(
-            'SELECT * FROM users WHERE id = ?',
+            'SELECT * FROM wallet WHERE id = ?',
             [id]
         );
         return rows[0];
     }
 
-    static async deleteUserProfile(id, amount) {
+    static async updateWalletBalance(id, amount) {
         await pool.execute(
             'UPDATE users SET wallet_balance = wallet_balance + ? WHERE id = ?',
             [amount, id]

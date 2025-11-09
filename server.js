@@ -9,7 +9,6 @@
     const campaignRoute = require('./Routes/endpoints/campaigns');
     const championRoute = require('./Routes/endpoints/champion');
     const followerRoute = require('./Routes/endpoints/follower');
-    const influencerRoute = require('./Routes/endpoints/influencer');
     const walletRoute = require('./Routes/endpoints/wallets');
     
     const path = require('path');
@@ -20,25 +19,22 @@
     app.use('/auth', authRoute);
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.use('/users', walletRoute);
+    app.use('/wallet', walletRoute);
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.use('/auth', influencerRoute);
+    app.use('/follower', followerRoute);
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.use('/users', followerRoute);
+    app.use('/champion', championRoute);
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.use('/auth', championRoute);
+    app.use('/campaign', campaignRoute);
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.use('/users', campaignRoute);
+    app.use('/admin', adminRoute);
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.use('/auth', adminRoute);
-    app.use(express.static(path.join(__dirname, 'public')));
-
-    app.use('/users', backerRoute);
+    app.use('/backer', backerRoute);
     app.use(express.static(path.join(__dirname, 'public')));
     
     app.get('/', (req, res) => {
@@ -47,6 +43,10 @@
 
     app.get('/register', (req, res) => {
         res.sendFile(path.join(__dirname, 'views', 'register.html'));
+    });
+
+    app.get('/createcampain', (req, res) => {
+        res.sendFile(path.join(__dirname, 'views', 'campaign.html'));
     });
 
     app.get('/login', (req, res) => {

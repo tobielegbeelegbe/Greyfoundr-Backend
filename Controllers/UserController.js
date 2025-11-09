@@ -7,24 +7,30 @@
 // - In production, always hash passwords (e.g., using bcrypt) and add input validation (e.g., using Joi or express-validator).
 // - These controllers handle basic operations: GET all users, GET by ID, POST create, PUT update, DELETE by ID.
 
-const con = require('../dbconnect');
+const pool = require('../dbconnect');
 const crypto = require('crypto');
 
 
 
 // Get all users
 const getUsers = async (req, res) => {
+  const con = await pool.getConnection();
   try {
           console.log("TEST DATA :");
-          con.query("SELECT * FROM users", function (err, result, fields) {
-                if (err) throw err;
+          const result = await con.execute("SELECT * FROM users")
+          
+              
                 console.log(result); // result will contain the fetched data
                 res.send(result);
-              }); 
+            
              // res.status(200).json(result);
   } catch (error) {
     console.error('Error fetching users:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+  finally
+  {
+    con.release();
   }
 };
 
@@ -32,11 +38,15 @@ const getUsers = async (req, res) => {
 const getUserById = async (req, res) => {
   const { id } = req.params;
   try {
-    con.query("SELECT * FROM users where id = ? ",[id], function (err, result, fields) {
-                if (err) throw err;
-                console.log(result); // result will contain the fetched data
-                res.send(result);
-              }); 
+      
+        const con = await pool.getConnection();
+
+    const [rows] = await pool.execute(
+            "SELECT * FROM users where id = ? ",[id]
+        );
+    
+    console.log(rows[0]); // result will contain the fetched data
+    res.send(rows[0]);
     
   } catch (error) {
     console.error('Error fetching user:', error);
