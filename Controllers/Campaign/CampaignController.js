@@ -50,6 +50,26 @@ const getCampaignById = async (req, res) => {
   }
 };
 
+const getCampaignByName = async (req, res) => {
+
+  const { name } = req.params;
+  try {
+    const con = await pool.getConnection();
+
+    const [rows] = await pool.execute(
+            "SELECT * FROM campaigns where title = ? ",[name]
+        );
+    
+    console.log(rows[0]); // result will contain the fetched data
+    res.send(rows[0]);
+              
+    
+  } catch (error) {
+    console.error('Error fetching Campaign:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
 // Create a new Campaign
 const createCampaign  = async (req, res) => {
   const con = await pool.getConnection();
@@ -148,4 +168,5 @@ module.exports = {
   createCampaign ,
   updateCampaign ,
   deleteCampaign ,
+  getCampaignByName,
 };

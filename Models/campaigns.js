@@ -27,6 +27,12 @@ const getCampaignById = async (id) => {
   return rows.length > 0 ? rows[0] : null;
 };
 
+
+const getCampaignByName = async (name) => {
+  const [rows] = await db.execute('SELECT * FROM campaigns WHERE title = ?', [name]);
+  return rows.length > 0 ? rows[0] : null;
+};
+
 // Create a new campaign
 const createCampaign = async (campaignData) => {
   const { title, description, start_date, end_date, status, user_id } = campaignData;
@@ -107,4 +113,5 @@ module.exports = {
   updateCampaign,
   deleteCampaign,
   getCampaignsByUserId,
+  getCampaignByName,
 };
