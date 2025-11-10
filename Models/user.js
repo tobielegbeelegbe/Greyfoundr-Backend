@@ -4,11 +4,11 @@ const bcrypt = require('bcryptjs');
 class User {
     static async create(email, password, phone) {
         const hashedPassword = await bcrypt.hash(password, 10);
-
+        const username = email;
         //const sql = 'INSERT INTO `users`(`email`,`phone`, `password_hash`) VALUES (?,?,?,?,?)'
         const [result] = await pool.execute(
-            'INSERT INTO users (email, password_hash, phone) VALUES (?, ?,?)',
-            [email, hashedPassword, phone]
+            'INSERT INTO users (email, password_hash, phone, username) VALUES (?, ?,?,?)',
+            [email, hashedPassword, phone, username]
         );
 
 
