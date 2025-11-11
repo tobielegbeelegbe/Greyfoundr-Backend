@@ -9,9 +9,12 @@
     const walletRoute = require('./Routes/endpoints/wallets');
 
 
-   app.use('/api/notifications', notificationRoutes);
+   
    const path = require('path');
 
+    app.use('/api/notifications', notificationRoutes);
+    app.use(express.static(path.join(__dirname, 'public')));
+    
     app.use('/users', userRoute);
     app.use(express.static(path.join(__dirname, 'public')));
 

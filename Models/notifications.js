@@ -2,6 +2,7 @@ const pool = require('../dbconnect');
 const bcrypt = require('bcryptjs');
 
 
+
 class Notification {
   static async findAll(userId) {
     const [rows] = await pool.execute('SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC', [userId]);
