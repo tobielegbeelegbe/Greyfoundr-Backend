@@ -10,8 +10,12 @@
     const championRoute = require('./Routes/endpoints/champion');
     const followerRoute = require('./Routes/endpoints/follower');
     const walletRoute = require('./Routes/endpoints/wallets');
+    const notificationRoutes = require('./Routes/endpoints/notifications');
     
     const path = require('path');
+
+    app.use('/notifications', notificationRoutes);
+    app.use(express.static(path.join(__dirname, 'public')));
 
     app.use('/users', userRoute);
     app.use(express.static(path.join(__dirname, 'public')));
